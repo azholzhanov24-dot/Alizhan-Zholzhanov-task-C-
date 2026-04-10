@@ -1,0 +1,138 @@
+//Task 1
+int[] numbers = { 3, 7, 2, 9, 5, 1 };
+int totalSum = 0;
+
+foreach (int element in numbers)
+{
+    totalSum += element;
+}
+
+Console.WriteLine($"Sum = {totalSum}");
+
+
+//task2
+int[] temps = { 12, -3, 45, 0, 28, -10, 33 };
+
+// 2.1
+int[] sortedTemps = (int[])temps.Clone(); 
+Array.Sort(sortedTemps);
+Console.WriteLine($"Min (Sort) = {sortedTemps[0]}, Max (Sort) = {sortedTemps[sortedTemps.Length - 1]}");
+
+// 2.2
+int min = temps[0];
+int max = temps[0];
+
+foreach (int t in temps)
+{
+    min = Math.Min(min, t);
+    max = Math.Max(max, t);
+}
+Console.WriteLine($"Min (Loop) = {min}, Max (Loop) = {max}");
+
+//task 3
+string[] words = { "apple", "banana", "cherry", "date" };
+
+// 3.1
+for (int i = 0; i < words.Length / 2; i++)
+{
+    int j = words.Length - 1 - i;
+    string temp = words[i];
+    words[i] = words[j];
+    words[j] = temp;
+}
+Console.WriteLine("Manual: " + string.Join(" ", words));
+
+// 3.2
+Array.Reverse(words);
+Console.WriteLine("Built-in: " + string.Join(" ", words));
+
+//task 4
+int[] data = { 4, 7, 2, 11, 6, 9, 14, 3, 8 };
+int even = 0;
+int odd = 0;
+
+for (int i = 0; i < data.Length; i++)
+{
+    if (data[i] % 2 == 0) even++;
+    else odd++;
+}
+
+Console.WriteLine($"Even = {even}, Odd = {odd}");
+
+//task 5
+int[] raw = { 1, 3, 2, 3, 5, 1, 4, 2, 5 };
+List<int> uniqueValues = new List<int>();
+
+foreach (int val in raw)
+{
+    if (uniqueValues.IndexOf(val) == -1)
+    {
+        uniqueValues.Add(val);
+    }
+}
+
+Console.WriteLine("Unique elements: " + string.Join(" ", uniqueValues));
+
+//task 6
+int[] arr = { 1, 2, 3, 4, 5, 6, 7 };
+int k = 3;
+
+int[] shifted = RotateLeft(arr, k);
+Console.WriteLine("Rotated: " + string.Join(" ", shifted));
+
+static int[] RotateLeft(int[] arr, int k)
+{
+    int n = arr.Length;
+    int[] result = new int[n];
+    k %= n; 
+
+    for (int i = 0; i < n; i++)
+    {
+        int newPos = (i + (n - k)) % n;
+        result[i] = arr[(i + k) % n];
+    }
+    return result;
+}
+
+//task 7
+static bool IsPalindrome(string s)
+{
+    string cleaned = s.ToLower();
+    for (int i = 0; i < cleaned.Length / 2; i++)
+    {
+        if (cleaned[i] != cleaned[cleaned.Length - 1 - i])
+            return false;
+    }
+    return true;
+}
+
+//task 8
+static long Factorial(int n)
+{
+    if (n == 0) return 1;
+    long res = 1;
+    for (int i = 1; i <= n; i++)
+    {
+        res *= i;
+    }
+    return res;
+}
+
+//task 9
+static string FizzBuzz(int n)
+{
+    if (n % 3 == 0 && n % 5 == 0) return "FizzBuzz";
+    if (n % 3 == 0) return "Fizz";
+    if (n % 5 == 0) return "Buzz";
+    return n.ToString();
+}
+
+//task 10
+static double ToFahrenheit(double c) => c * 9 / 5 + 32;
+static double ToCelsius(double f) => (f - 32) * 5 / 9;
+
+double[] celsiusValues = { 0, 20, 37, 100, -40 };
+foreach (var c in celsiusValues)
+{
+    Console.WriteLine($"{c}°C = {ToFahrenheit(c)}°F");
+}
