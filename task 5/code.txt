@@ -1,0 +1,166 @@
+class Student
+{
+    private static int _idCounter = 1;
+    private double _gpa;
+
+    public string Name { get; set; }
+    public int StudentId { get; private set; }
+    public string Faculty { get; set; }
+
+    public double GPA
+    {
+        get => _gpa;
+        set
+        {
+            if (value >= 0.0 && value <= 4.0)
+            {
+                _gpa = value;
+            }
+        }
+    }
+
+    public Student(string name, double gpa, string faculty)
+    {
+        Name = name;
+        GPA = gpa;
+        Faculty = faculty;
+        StudentId = _idCounter++;
+    }
+
+    public void PrintInfo()
+    {
+        Console.WriteLine($"ID: {StudentId} | Name: {Name} | GPA: {GPA:F1} | Faculty: {Faculty}");
+    }
+}
+
+class Registry
+{
+    private Student[] _students = new Student[100];
+    private int _count = 0;
+
+    public void Add(Student student)
+    {
+        if (_count < _students.Length)
+        {
+            _students[_count] = student;
+            _count++;
+            Console.WriteLine("Done.");
+        }
+        else
+        {
+            Console.WriteLine("Registry is full.");
+        }
+    }
+
+    public Student FindById(int id)
+    {
+        for (int i = 0; i < _count; i++)
+        {
+            if (_students[i].StudentId == id) return _students[i];
+        }
+        return null;
+    }
+
+    public void FindByName(string name)
+    {
+        bool found = false;
+        for (int i = 0; i < _count; i++)
+        {
+            if (_students[i].Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+            {
+                _students[i].PrintInfo();
+                found = true;
+            }
+        }
+        if (!found) Console.WriteLine("Not found.");
+    }
+
+    public void GetTopStudents(int n)
+    {
+        if (_count == 0) return;
+
+        Student[] temp = new Student[_count];
+        Array.Copy(_students, temp, _count);
+
+        for (int i = 0; i < temp.Length - 1; i++)
+        {
+            for (int j = 0; j < temp.Length - i - 1; j++)
+            {
+                if (temp[j].GPA < temp[j + 1].GPA)
+                {
+                    Student b = temp[j];
+                    temp[j] = temp[j + 1];
+                    temp[j + 1] = b;
+                }
+            }
+        }
+
+        int limit = n < _count ? n : _count;
+        for (int i = 0; i < limit; i++)
+        {
+            temp[i].PrintInfo();
+        }
+    }
+
+    public void PrintAll()
+    {
+        if (_count == 0) Console.WriteLine("Empty.");
+        for (int i = 0; i < _count; i++)
+        {
+            _students[i].PrintInfo();
+        }
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Registry registry = new Registry();
+        bool running = true;
+
+        while (running)
+        {
+            Console.WriteLine("\n1. Add | 2. ID | 3. Name | 4. Top N | 5. All | 6. Exit");
+            string choice = Console.ReadLine();
+
+            switch (choice)
+            {
+                case "1":
+                    Console.Write("Name: ");
+                    string name = Console.ReadLine();
+                    Console.Write("GPA: ");
+                    if (double.TryParse(Console.ReadLine(), out double gpa))
+                    {
+                        Console.Write("Faculty: ");
+                        string faculty = Console.ReadLine();
+                        registry.Add(new Student(name, gpa, faculty));
+                    }
+                    break;
+                case "2":
+                    Console.Write("ID: ");
+                    if (int.TryParse(Console.ReadLine(), out int id))
+                    {
+                        Student s = registry.FindById(id);
+                        if (s != null) s.PrintInfo();
+                        else Console.WriteLine("Not found.");
+                    }
+                    break;
+                case "3":
+                    Console.Write("Name: ");
+                    registry.FindByName(Console.ReadLine());
+                    break;
+                case "4":
+                    Console.Write("N: ");
+                    if (int.TryParse(Console.ReadLine(), out int n)) registry.GetTopStudents(n);
+                    break;
+                case "5":
+                    registry.PrintAll();
+                    break;
+                case "6":
+                    running = false;
+                    break;
+            }
+        }
+    }
+}
